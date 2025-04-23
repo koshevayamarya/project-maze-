@@ -15,7 +15,7 @@ class Cell:
         if self.walls['top']:
             pygame.draw.line(Surface, pygame.Color('blue'), (self.x, self.y), (self.x + 1, self.y), self.thickness)
         if self.walls['right']:
-            pygame.draw.line(Surface, pygame.Color('darkgreen'), (self.x + 1, self.y, (self.x + 1, self.y + 1), self.thickness)
+            pygame.draw.line(Surface, pygame.Color('darkgreen'), (self.x + 1, self.y), (self.x + 1, self.y + 1), self.thickness)
         if self.walls['bottom']:
             pygame.draw.line(Surface, pygame.Color('darkgreen'), (self.x + 1, self.y + 1), (self.x, self.y + 1), self.thickness)
         if self.walls['left']:
