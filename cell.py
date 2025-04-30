@@ -2,36 +2,37 @@ import pygame
 
 from random import choice
 
-
 class Cell:
     def __init__(self, x, y, thickness):
         self.x = x
-        self.y = y
+        self.y =  y
         self.thickness = thickness
         self.walls = {'top': True, 'right': True, 'bottom': True, 'left': True}
         self.visited = False
 
-    def draw(self, Surface):
+    def draw(self, Surface, tile):
+        x, y = self.x * tile, self.y * tile
         if self.walls['top']:
-            pygame.draw.line(Surface, pygame.Color('blue'), (self.x, self.y), (self.x + 1, self.y), self.thickness)
+            pygame.draw.line(Surface, pygame.Color('darkgreen'), (x, y), (x + tile, y), self.thickness)
         if self.walls['right']:
-            pygame.draw.line(Surface, pygame.Color('darkgreen'), (self.x + 1, self.y), (self.x + 1, self.y + 1), self.thickness)
+            pygame.draw.line(Surface, pygame.Color('darkgreen'), (x + tile, y), (x + tile, y + tile), self.thickness)
         if self.walls['bottom']:
-            pygame.draw.line(Surface, pygame.Color('darkgreen'), (self.x + 1, self.y + 1), (self.x, self.y + 1), self.thickness)
+            pygame.draw.line(Surface, pygame.Color('darkgreen'), (x + tile, y + tile), (x , y + tile), self.thickness)
         if self.walls['left']:
-            pygame.draw.line(Surface, pygame.Color('darkgreen'), (self.x, self.y + 1), (self.x, self.y), self.thickness)
+            pygame.draw.line(Surface, pygame.Color('darkgreen'), (x, y + tile), (x, y), self.thickness)
 
-    def check_cell(self, x, y, cols, rows):
-        if self.x < 0 or self.x > cols - 1 or self.y < 0 or self.y > rows - 1:
+    def check_cell(self, x, y, cols, rows, grid_cells):
+        find_index = lambda x, y: x + y * cols
+        if x < 0 or x > cols - 1 or y < 0 or y > rows - 1:
             return False
-        return True
+        return grid_cells[find_index(x, y)]
 
-    def check_neighbors(self, cols, rows):
+    def check_neighbors(self, cols, rows, grid_cells):
         neighbors = []
-        top = self.check_cell(self.x, self.y - 1, cols, rows)
-        right = self.check_cell(self.x + 1, self.y, cols, rows)
-        bottom = self.check_cell(self.x, self.y + 1, cols, rows)
-        left = self.check_cell(self.x - 1, self.y, cols, rows)
+        top = self.check_cell(self.x, self.y - 1, cols, rows, grid_cells)
+        right = self.check_cell(self.x + 1, self.y, cols, rows, grid_cells)
+        bottom = self.check_cell(self.x, self.y + 1, cols, rows, grid_cells)
+        left = self.check_cell(self.x - 1, self.y, cols, rows, grid_cells)
         if top and not top.visited:
             neighbors.append(top)
         if right and not right.visited:
@@ -40,7 +41,4 @@ class Cell:
             neighbors.append(bottom)
         if left and not left.visited:
             neighbors.append(left)
-        if neighbors:
-            return choice(neighbors)
-        else:
-            return False
+        return choice(neighbors) if neighbors else False
